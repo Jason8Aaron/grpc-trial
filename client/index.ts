@@ -1,28 +1,28 @@
-import * as grpc from "grpc"
-import * as protoLoader from '@grpc/proto-loader';
+import * as grpc from "grpc";
+import * as protoLoader from "@grpc/proto-loader";
 import * as path from "path";
 
-var packageDefinition = protoLoader.loadSync(
+const packageDefinition = protoLoader.loadSync(
     path.resolve("protos/hello.proto"),
     {
         keepCase: true,
         longs: String,
         enums: String,
         defaults: true,
-        oneofs: true
+        oneofs: true,
     });
 
-var helloProto = grpc.loadPackageDefinition(packageDefinition).helloworld;
+const helloProto = grpc.loadPackageDefinition(packageDefinition).helloworld as any;
 
 function main() {
-    var client = new helloProto.Greeter('localhost:50051',
+    const client = new helloProto.Greeter("localhost:50051",
         grpc.credentials.createInsecure());
-    client.sayHello({ name: 'you' }, function (err, response) {
-        console.log('Greeting:', response.message);
+    client.sayHello({ name: "you" }, (err, response) => {
+        console.log("Greeting:", response.message);
     });
-    client.sayHelloAgain({ name: 'you' }, function (err, response) {
-        console.log('Greeting:', response.message);
+    client.sayHelloAgain({ name: "you" }, (err, response) => {
+        console.log("Greeting:", response.message);
     });
 }
 
-main()
+main();

@@ -1,0 +1,69 @@
+{
+    "extends": [
+        "tslint:recommended"
+    ],
+    "rules": {
+        "quotemark": [
+            true,
+            "double"
+        ],
+        "prefer-const": true,
+        "object-literal-sort-keys": false,
+        "ordered-imports": false,
+        "member-ordering": false,
+        "variable-name": false,
+        "jsx-no-multiline-js": false,
+        "jsx-no-lambda": false,
+        "jsx-boolean-value": false,
+        "no-console": false,
+        "interface-name": false,
+        "max-classes-per-file": false,
+        "jsx-no-string-ref": false,
+        "no-shadowed-variable": false,
+        "no-debugger": false,
+        "linebreak-style": [
+            true,
+            "LF"
+        ],
+        "no-unused-expression": [
+            true,
+            "allow-fast-null-checks"
+        ],
+        "space-before-function-paren": [
+            false,
+            "never"
+        ],
+        "space-within-parens": true,
+        "semicolon": [
+            true,
+            "always"
+        ],
+        "max-line-length": [
+            true,
+            200
+        ],
+        "forin": false,
+        "no-bitwise": false,
+        "indent": [
+            true,
+            "spaces",
+            4
+        ]
+    },
+    "jsRules": {
+        "no-console": false,
+        "forin": false,
+        "indent": [
+            true,
+            "spaces",
+            4
+        ]
+    },
+    "linterOptions": {
+        "exclude": [
+            "**/*.js",
+            "built/**/*",
+            "node_modules/**/*"
+        ]
+    }
+}

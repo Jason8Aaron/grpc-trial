@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cd built/ && pinus stop && pinus start",
+    "build": "npx tsc",
+    "watch": "npx tsc --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.2",
-    "grpc": "^1.24.0"
+    "grpc": "^1.24.0",
+    "grpc-tools": "^1.8.0",
+    "protobufjs": "^6.8.8"
   }
 }

@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "types": [
+            "node"
+        ],
+        "module": "commonjs",
+        "resolveJsonModule": true,
+        "target": "es2018",
+        "lib": [
+            "es2018",
+            "esnext.asynciterable"
+        ],
+        "noImplicitAny": false,
+        "noImplicitThis": false,
+        "outDir": "built",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "checkJs": false,
+        "allowJs": true,
+        "watch": false,
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.js"
+    ],
+    "exclude": [
+        "dev",
+        "ugly",
+        "built",
+        "node_modules"
+    ]
+}
