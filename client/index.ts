@@ -3,7 +3,7 @@ import * as protoLoader from "@grpc/proto-loader";
 import * as path from "path";
 
 const packageDefinition = protoLoader.loadSync(
-    path.resolve("protos/hello.proto"),
+    path.resolve("protos/services/hello.proto"),
     {
         keepCase: true,
         longs: String,
