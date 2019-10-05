@@ -103,7 +103,7 @@ function genServiceInterface(name: string, service: ServiceDefinition) {
         ${
         Object.values(service).map((item) => {
             return genMethodInterface(item);
-        })
+        }).join("\n\t")
         }
     }`;
     console.log(template);
@@ -149,7 +149,7 @@ function genEnumTypeInterface(type: EnumTypeDetail, isExport = true) {
 function genMethodInterface<T, S>(method: MethodDefinition<T, S>) {
     const methodName = method.path.split("/").pop();
     const template =
-        `${methodName}(call: { request: ${(method.requestType.type as MessageTypeDetail).name} }, ` +
+        `${method.originalName ? method.originalName : methodName}(call: { request: ${(method.requestType.type as MessageTypeDetail).name} }, ` +
         `callback: (e: Error, response: ${(method.responseType.type as MessageTypeDetail).name}) => void): void;`;
     return template;
 }

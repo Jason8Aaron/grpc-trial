@@ -1,7 +1,7 @@
 import * as grpc from "grpc";
 import * as protoLoader from "@grpc/proto-loader";
 import * as path from "path";
-import { Greeter, IHelloRequest } from "./interfaces/hello";
+import { Greeter, HelloRequest, HelloReply } from "./interfaces/hello";
 
 const packageDefinition = protoLoader.loadSync(
     path.resolve("protos/services/hello.proto"),
@@ -17,11 +17,11 @@ const helloProto = grpc.loadPackageDefinition(packageDefinition).helloworld as a
 
 class GreeterClass implements Greeter {
 
-    public sayHelloAgain(call: { request: IHelloRequest }, callback: any): void {
+    public sayHelloAgain(call: { request: HelloRequest }, callback: (e: Error, response: HelloReply) => void): void {
         callback(null, { message: call.request.name });
     }
 
-    public sayHello(call: { request: IHelloRequest }, callback: any): void {
+    public sayHello(call: { request: HelloRequest }, callback: (e: Error, response: HelloReply) => void): void {
         callback(null, { message: call.request.name });
     }
 

@@ -1,13 +1,13 @@
 export interface Greeter {
-    public sayHello(call: { request: IHelloRequest }, callback: Greeter.SayHelloCallback): void;
-    public sayHelloAgain(call: { request: IHelloRequest }, callback: Greeter.SayHelloAgainCallback): void;
+    sayHello(call: { request: HelloRequest }, callback: (e: Error, response: HelloReply) => void): void;
+    sayHelloAgain(call: { request: HelloRequest }, callback: (e: Error, response: HelloReply) => void): void;
 }
 
-export interface IHelloRequest {
-    name?: (string | null);
+export interface HelloRequest {
+    name?: string;
 }
 
-export interface IHelloReply {
-    message?: (string | null);
+export interface HelloReply {
+    message?: string;
 }
 
