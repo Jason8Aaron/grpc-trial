@@ -74,13 +74,14 @@ interface EnumTypeDetailValueItem {
 function genServiceInterface(name: string, service: ServiceDefinition) {
 
     const template = `
-    export interface ${name.split(".").pop()} {
-        ${
+export interface ${name.split(".").pop()} {
+    ${
         Object.values(service).map((item) => {
             return genMethodInterface(item);
-        }).join("\n\t")
+        }).join("\n    ")
         }
-    }`;
+}`;
+
     return template;
 }
 
@@ -88,37 +89,40 @@ function genMessageTypeInterface(type: MessageTypeDetail, isExport = true) {
 
     const enumTemplates = type.enumType.map((enumTypeItem) => {
         return genEnumTypeInterface(enumTypeItem, false);
-    }).join("\n\t");
+    }).join("\n    ");
 
     const messageTemplates = type.nestedType.map((messageTypeItem) => {
         return genMessageTypeInterface(messageTypeItem, false);
-    }).join("\n\t");
+    }).join("\n    ");
 
     const template = `
-    ${isExport ? "export " : ""}interface ${type.name} {
-        ${
+${isExport ? "export " : ""}interface ${type.name} {
+    ${
         type.field.map((item) => {
             if (item.label === LabelMap.repeated) {
                 return `${item.name}: ${item.typeName ? item.typeName : TypeMap[item.type]}[];`;
             } else {
                 return `${item.name}${item.label === LabelMap.optional ? "?" : ""}: ${item.typeName ? item.typeName : TypeMap[item.type]};`;
             }
-        }).join("\n\t")
+        }).join("\n    ")
         }
-    }`;
+}`;
+
     const templates = [enumTemplates, messageTemplates, template];
-    return templates.join("\n\t");
+    return templates.join("\n    ");
 }
 
 function genEnumTypeInterface(type: EnumTypeDetail, isExport = true) {
+
     const template = `
-    ${isExport ? "export " : ""}enum ${type.name} {
-        ${
+${isExport ? "export " : ""}enum ${type.name} {
+    ${
         type.value.map((item) => {
             return `${item.name} = ${item.number},`;
-        }).join("\n\t")
+        }).join("\n    ")
         }
-    }`;
+}`;
+
     return template;
 }
 
@@ -154,5 +158,5 @@ export default function GenProtoInterfaces(filePath) {
         }
     });
 
-    return interfaces.join("\n\t");
+    return interfaces.join("\n    ");
 }

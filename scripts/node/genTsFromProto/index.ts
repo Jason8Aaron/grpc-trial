@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as util from "util";
 import * as path from "path";
 import GenProtoInterfaces from "./genProtoInterfaces";
+import { exec } from "child_process";
 
 const readdir = util.promisify(fs.readdir);
 const fsStat = util.promisify(fs.stat);
@@ -52,4 +53,10 @@ if (!fs.existsSync(sourcePath)) {
     process.exit(1);
 }
 
-traversalDir(sourcePath, destPath);
+traversalDir(sourcePath, destPath)
+    .then(() => {
+        return util.promisify(exec)(`npx tslint --fix --project .`);
+    })
+    .catch((e) => {
+        console.error(e);
+    });

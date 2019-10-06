@@ -1,7 +1,7 @@
 import * as grpc from "grpc";
 import * as protoLoader from "@grpc/proto-loader";
 import * as path from "path";
-import { Greeter, HelloRequest, HelloReply } from "./interfaces/hello";
+import { Greeter, HelloRequest, HelloReply } from "../protosTs/services/hello";
 
 const packageDefinition = protoLoader.loadSync(
     path.resolve("protos/services/hello.proto"),
