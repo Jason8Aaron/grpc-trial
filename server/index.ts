@@ -54,7 +54,7 @@ class GoodService extends Good {
         goods.push({ name: call.request.name, index: goods.length });
 
         console.log("setGoodsSync: " + call.request.name);
-        return { success: +call.request.name };
+        throw new Error("Invalid good's name");
     }
 
 }

@@ -28,9 +28,12 @@ async function main() {
         const sayHelloResponse = await helloClient.sayHello({ name: i + "" });
         console.log("sayHelloResponse.message: " + sayHelloResponse.message);
     }
-
-    const setGoodsResponse = await goodClient.setGoods({ name: "Promise" });
-    console.log(setGoodsResponse.success);
+    try {
+        const setGoodsResponse = await goodClient.setGoods({ name: "Promise" });
+        console.log(setGoodsResponse.success);
+    } catch (e) {
+        console.error(e);
+    }
 
     const getGoodsResponse = await goodClient.getGoods({ from: 30, size: 2 });
     console.log(getGoodsResponse.count, getGoodsResponse.goods);
