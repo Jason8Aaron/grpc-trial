@@ -73,23 +73,27 @@ interface EnumTypeDetailValueItem {
 
 function genServiceInterface(name: string, service: ServiceDefinition) {
 
-    const template = `
+    const serverSideTemplate = `
 export abstract class ${name.split(".").pop()} {
-    ${Object.values(service).map((item) => genMethodInterface(item)).join("\n    ")}
+    ${Object.values(service).map((item) => genMethodInterface(item).serverSideTemplate).join("\n    ")}
 }`;
 
-    return template;
+    const clientSideTemplate = `
+export interface ${name.split(".").pop()}Client {
+    ${Object.values(service).map((item) => genMethodInterface(item).clientSideTemplate).join("\n    ")}
+}`;
+    return [serverSideTemplate, clientSideTemplate].join("\n");
 }
 
 function genMessageTypeInterface(type: MessageTypeDetail, isExport = true) {
 
     const enumTemplates = type.enumType.map((enumTypeItem) => {
         return genEnumTypeInterface(enumTypeItem, false);
-    }).join("\n    ");
+    }).join("\n");
 
     const messageTemplates = type.nestedType.map((messageTypeItem) => {
         return genMessageTypeInterface(messageTypeItem, false);
-    }).join("\n    ");
+    }).join("\n");
 
     const template = `
 ${isExport ? "export " : ""}interface ${type.name} {
@@ -124,7 +128,7 @@ function genMethodInterface<T, S>(method: MethodDefinition<T, S>) {
     const requestType = (method.requestType.type as MessageTypeDetail).name;
     const resposeType = (method.responseType.type as MessageTypeDetail).name;
 
-    const template = `
+    const serverSideTemplate = `
     ${methodName}(call: { request: ${requestType} }, callback: (e: Error, response?: ${resposeType}) => void): void {
         this.${methodName}Sync(call)
             .then((response) => {
@@ -137,7 +141,10 @@ function genMethodInterface<T, S>(method: MethodDefinition<T, S>) {
 
     protected abstract ${methodName}Sync(call: { request: ${requestType} }): Promise<${resposeType}>;
         `;
-    return template;
+
+    const clientSideTemplate = `${methodName}(request: ${requestType}, callback: (e: Error, response?: ${resposeType}) => void): void;`;
+
+    return { serverSideTemplate, clientSideTemplate };
 }
 
 export default function GenProtoInterfaces(filePath) {
@@ -164,5 +171,5 @@ export default function GenProtoInterfaces(filePath) {
         }
     });
 
-    return interfaces.join("\n    ");
+    return interfaces.join("\n");
 }
