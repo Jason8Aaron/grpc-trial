@@ -1,0 +1,34 @@
+syntax="proto3";
+
+package good;
+// The greeting service definition.
+service Good {
+  // Sends a greeting
+  rpc getGoods (GetGoodsRequest) returns (GetGoodsReply) {}
+  // Sends another greeting
+  rpc setGoods (SetGoodsRequest) returns (SetGoodsReply) {}
+}
+
+message GetGoodsRequest {
+  optional int32 from = 1;
+  optional int32 size = 2;
+}
+
+message GetGoodsReply {
+    
+  message Result {
+    string name = 1;
+    string index = 2;
+  }
+
+  repeated Result goods = 1;
+  required int32 count = 2;
+}
+
+message SetGoodsRequest {
+  string name = 1;
+}
+
+message SetGoodsReply {
+  int32 success = 1;
+}
