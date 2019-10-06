@@ -7,8 +7,26 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Server",
             "program": "${workspaceFolder}/built/server/index.js",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Client",
+            "program": "${workspaceFolder}/built/client/index.js",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Gen Interfaces",
+            "program": "${workspaceFolder}/built/scripts/node/genProtoInterfaces.js",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Test",
+            "program": "${workspaceFolder}/built/test.js",
         }
     ]
 }

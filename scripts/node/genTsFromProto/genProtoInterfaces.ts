@@ -79,7 +79,8 @@ export abstract class ${name.split(".").pop()} {
 }`;
 
     const clientSideTemplate = `
-export interface ${name.split(".").pop()}Client {
+export class ${name.split(".").pop()}Client {
+    constructor(private client){}
     ${Object.values(service).map((item) => genMethodInterface(item).clientSideTemplate).join("\n    ")}
 }`;
     return [serverSideTemplate, clientSideTemplate].join("\n");
@@ -139,10 +140,17 @@ function genMethodInterface<T, S>(method: MethodDefinition<T, S>) {
             });
     }
 
-    protected abstract ${methodName}Sync(call: { request: ${requestType} }): Promise<${resposeType}>;
-        `;
+    protected abstract ${methodName}Sync(call: { request: ${requestType} }): Promise<${resposeType}>;`;
 
-    const clientSideTemplate = `${methodName}(request: ${requestType}, callback: (e: Error, response?: ${resposeType}) => void): void;`;
+    const clientSideTemplate = `
+    ${methodName}(request: ${requestType}): Promise<${resposeType}> {
+        return new Promise((resolve,reject)=>{
+            this.client.${methodName}(request, (e, response) => {
+                if(e){return reject(e)}
+                resolve(response)
+            })
+        })
+    }`;
 
     return { serverSideTemplate, clientSideTemplate };
 }

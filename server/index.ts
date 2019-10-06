@@ -22,11 +22,12 @@ class GreeterService extends Greeter {
 
     protected async sayHelloAgainSync(call: { request: HelloRequest; }): Promise<HelloReply> {
         console.log("sayHelloAgainSync: " + call.request.name);
-        return { message: "sayHelloAgainSync: " + call.request.name };
+        return { message: call.request.name };
     }
 
     protected async sayHelloSync(call: { request: HelloRequest; }): Promise<HelloReply> {
-        return { message: "sayHelloSync" };
+        console.log("sayHelloSync: " + call.request.name);
+        return { message: call.request.name };
     }
 }
 
