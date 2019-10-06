@@ -1,4 +1,3 @@
-import * as grpc from "grpc";
 import * as protoLoader from "@grpc/proto-loader";
 import { ServiceDefinition, MethodDefinition } from "@grpc/proto-loader";
 
@@ -72,30 +71,6 @@ interface EnumTypeDetailValueItem {
     options: any;
 }
 
-const packageDefinition = protoLoader.loadSync(
-    path.resolve("protos/services/hello.proto"),
-    {
-        keepCase: true,
-        longs: String,
-        enums: String,
-        defaults: true,
-        oneofs: true,
-    });
-
-Object.keys(packageDefinition).forEach((key) => {
-    const item = packageDefinition[key];
-    if (item.format && item.format === MessageOrEnumFormat.Message) {
-        // message
-        genMessageTypeInterface(item.type as MessageTypeDetail);
-    } else if (item.format && item.format === MessageOrEnumFormat.Enum) {
-        // enum
-        genEnumTypeInterface(item.type as EnumTypeDetail);
-    } else {
-        // Service
-        genServiceInterface(key, item as ServiceDefinition);
-    }
-});
-
 function genServiceInterface(name: string, service: ServiceDefinition) {
 
     const template = `
@@ -106,18 +81,18 @@ function genServiceInterface(name: string, service: ServiceDefinition) {
         }).join("\n\t")
         }
     }`;
-    console.log(template);
+    return template;
 }
 
 function genMessageTypeInterface(type: MessageTypeDetail, isExport = true) {
 
-    type.enumType.forEach((enumTypeItem) => {
-        genEnumTypeInterface(enumTypeItem, false);
-    });
+    const enumTemplates = type.enumType.map((enumTypeItem) => {
+        return genEnumTypeInterface(enumTypeItem, false);
+    }).join("\n\t");
 
-    type.nestedType.forEach((messageTypeItem) => {
-        genMessageTypeInterface(messageTypeItem, false);
-    });
+    const messageTemplates = type.nestedType.map((messageTypeItem) => {
+        return genMessageTypeInterface(messageTypeItem, false);
+    }).join("\n\t");
 
     const template = `
     ${isExport ? "export " : ""}interface ${type.name} {
@@ -131,7 +106,8 @@ function genMessageTypeInterface(type: MessageTypeDetail, isExport = true) {
         }).join("\n\t")
         }
     }`;
-    console.log(template);
+    const templates = [enumTemplates, messageTemplates, template];
+    return templates.join("\n\t");
 }
 
 function genEnumTypeInterface(type: EnumTypeDetail, isExport = true) {
@@ -143,7 +119,7 @@ function genEnumTypeInterface(type: EnumTypeDetail, isExport = true) {
         }).join("\n\t")
         }
     }`;
-    console.log(template);
+    return template;
 }
 
 function genMethodInterface<T, S>(method: MethodDefinition<T, S>) {
@@ -152,4 +128,31 @@ function genMethodInterface<T, S>(method: MethodDefinition<T, S>) {
         `${method.originalName ? method.originalName : methodName}(call: { request: ${(method.requestType.type as MessageTypeDetail).name} }, ` +
         `callback: (e: Error, response: ${(method.responseType.type as MessageTypeDetail).name}) => void): void;`;
     return template;
+}
+
+export default function GenProtoInterfaces(filePath) {
+    const packageDefinition = protoLoader.loadSync(path.resolve(filePath),
+        {
+            keepCase: true,
+            longs: String,
+            enums: String,
+            defaults: true,
+            oneofs: true,
+        });
+
+    const interfaces = Object.keys(packageDefinition).map((key) => {
+        const item = packageDefinition[key];
+        if (item.format && item.format === MessageOrEnumFormat.Message) {
+            // message
+            return genMessageTypeInterface(item.type as MessageTypeDetail);
+        } else if (item.format && item.format === MessageOrEnumFormat.Enum) {
+            // enum
+            return genEnumTypeInterface(item.type as EnumTypeDetail);
+        } else {
+            // Service
+            return genServiceInterface(key, item as ServiceDefinition);
+        }
+    });
+
+    return interfaces.join("\n\t");
 }
