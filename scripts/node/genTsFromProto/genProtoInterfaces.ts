@@ -74,12 +74,8 @@ interface EnumTypeDetailValueItem {
 function genServiceInterface(name: string, service: ServiceDefinition) {
 
     const template = `
-export interface ${name.split(".").pop()} {
-    ${
-        Object.values(service).map((item) => {
-            return genMethodInterface(item);
-        }).join("\n    ")
-        }
+export abstract class ${name.split(".").pop()} {
+    ${Object.values(service).map((item) => genMethodInterface(item)).join("\n    ")}
 }`;
 
     return template;
@@ -116,21 +112,31 @@ function genEnumTypeInterface(type: EnumTypeDetail, isExport = true) {
 
     const template = `
 ${isExport ? "export " : ""}enum ${type.name} {
-    ${
-        type.value.map((item) => {
-            return `${item.name} = ${item.number},`;
-        }).join("\n    ")
-        }
+    ${type.value.map((item) => `${item.name} = ${item.number},`).join("\n    ")}
 }`;
 
     return template;
 }
 
 function genMethodInterface<T, S>(method: MethodDefinition<T, S>) {
-    const methodName = method.path.split("/").pop();
-    const template =
-        `${method.originalName ? method.originalName : methodName}(call: { request: ${(method.requestType.type as MessageTypeDetail).name} }, ` +
-        `callback: (e: Error, response: ${(method.responseType.type as MessageTypeDetail).name}) => void): void;`;
+
+    const methodName = method.originalName ? method.originalName : method.path.split("/").pop();
+    const requestType = (method.requestType.type as MessageTypeDetail).name;
+    const resposeType = (method.responseType.type as MessageTypeDetail).name;
+
+    const template = `
+    ${methodName}(call: { request: ${requestType} }, callback: (e: Error, response?: ${resposeType}) => void): void {
+        this.${methodName}Sync(call)
+            .then((response) => {
+                callback(null, response);
+            })
+            .catch((e) => {
+                callback(e);
+            });
+    }
+
+    protected abstract ${methodName}Sync(call: { request: ${requestType} }): Promise<${resposeType}>;
+        `;
     return template;
 }
 

@@ -15,22 +15,21 @@ const packageDefinition = protoLoader.loadSync(
 
 const helloProto = grpc.loadPackageDefinition(packageDefinition).helloworld as any;
 
-class GreeterClass implements Greeter {
+class GreeterService extends Greeter {
 
-    public sayHelloAgain(call: { request: HelloRequest }, callback: (e: Error, response: HelloReply) => void): void {
-        callback(null, { message: call.request.name });
+    protected async sayHelloAgainSync(call: { request: HelloRequest; }): Promise<HelloReply> {
+        return { message: "sayHelloAgainSync" };
     }
 
-    public sayHello(call: { request: HelloRequest }, callback: (e: Error, response: HelloReply) => void): void {
-        callback(null, { message: call.request.name });
+    protected async sayHelloSync(call: { request: HelloRequest; }): Promise<HelloReply> {
+        return { message: "sayHelloSync" };
     }
-
 }
 
 function main() {
     const server = new grpc.Server();
     server.addService(helloProto.Greeter.service,
-        new GreeterClass());
+        new GreeterService());
     server.bind("0.0.0.0:50051", grpc.ServerCredentials.createInsecure());
     server.start();
 }
