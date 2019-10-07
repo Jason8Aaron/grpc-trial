@@ -86,18 +86,18 @@ export class ${name.split(".").pop()}Client {
     return [serverSideTemplate, clientSideTemplate].join("\n");
 }
 
-function genMessageTypeInterface(type: MessageTypeDetail, isExport = true) {
+function genMessageTypeInterface(type: MessageTypeDetail) {
 
     const enumTemplates = type.enumType.map((enumTypeItem) => {
-        return genEnumTypeInterface(enumTypeItem, false);
+        return genEnumTypeInterface(enumTypeItem);
     }).join("\n");
 
     const messageTemplates = type.nestedType.map((messageTypeItem) => {
-        return genMessageTypeInterface(messageTypeItem, false);
+        return genMessageTypeInterface(messageTypeItem);
     }).join("\n");
 
     const template = `
-${isExport ? "export " : ""}interface ${type.name} {
+export interface ${type.name} {
     ${
         type.field.map((item) => {
             if (item.label === LabelMap.repeated) {
@@ -113,10 +113,10 @@ ${isExport ? "export " : ""}interface ${type.name} {
     return templates.join("\n    ");
 }
 
-function genEnumTypeInterface(type: EnumTypeDetail, isExport = true) {
+function genEnumTypeInterface(type: EnumTypeDetail) {
 
     const template = `
-${isExport ? "export " : ""}enum ${type.name} {
+export enum ${type.name} {
     ${type.value.map((item) => `${item.name} = ${item.number},`).join("\n    ")}
 }`;
 

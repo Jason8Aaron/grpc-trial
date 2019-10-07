@@ -17,8 +17,8 @@ message GetGoodsRequest {
 message GetGoodsReply {
     
   message Result {
-    string name = 1;
-    string index = 2;
+    required string name = 1;
+    required string index = 2;
   }
 
   repeated Result goods = 1;
@@ -26,9 +26,9 @@ message GetGoodsReply {
 }
 
 message SetGoodsRequest {
-  string name = 1;
+  required string name = 1;
 }
 
 message SetGoodsReply {
-  int32 success = 1;
+  required int32 success = 1;
 }

@@ -9,7 +9,7 @@ const packageDefinition = protoLoader.loadSync(
     path.resolve("protos/services/good.proto")],
     {
         keepCase: true,
-        longs: String,
+        longs: Number,
         enums: String,
         defaults: true,
         oneofs: true,
